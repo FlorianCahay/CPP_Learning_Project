@@ -38,7 +38,8 @@ public:
         const auto runway_middle_pos = (runway.start + runway.end) * 0.5f;
         const auto runway_length     = (runway.end - runway.start) * 0.5f;
 
-        const Waypoint before_in_air { offset + runway.start - runway_length + Point3D{ 0, 0, .7f }, wp_air };
+        const Waypoint before_in_air { offset + runway.start - runway_length + Point3D { 0, 0, .7f },
+                                       wp_air };
         const Waypoint runway_middle { offset + runway_middle_pos, wp_ground };
         const Waypoint runway_end { offset + runway.end, wp_ground };
         const Waypoint crossing { offset + crossing_pos, wp_ground };
@@ -66,7 +67,7 @@ public:
         const Waypoint crossing { offset + crossing_pos, wp_ground };
         const Waypoint runway_start { offset + runway.start, wp_ground };
         const Waypoint runway_middle { offset + runway_middle_pos, wp_ground };
-        const Waypoint later_in_air { offset + runway.end + runway_length + Point3D{ 0, 0, .7f }, wp_air };
+        const Waypoint later_in_air { offset + runway.end + runway_length + Point3D { 0, 0, .7f }, wp_air };
         const Waypoint randomly_high {
             Point3D { std::sin(angle), std::cos(angle), 0 } * 6 + Point3D { 0, 0, 2 }, wp_air
         };
@@ -84,5 +85,6 @@ public:
 
 inline const AirportType one_lane_airport { Point3D { -.1f, -.3f, 0 },
                                             Point3D { -.6f, .3f, 0 },
-                                            { Point3D { .3f, 0, 0 }, Point3D { -.3f, .3f, 0 }, Point3D{ 0, .55f, 0 } },
+                                            { Point3D { .3f, 0, 0 }, Point3D { -.3f, .3f, 0 },
+                                              Point3D { 0, .55f, 0 } },
                                             { Runway { Point3D { -.5f, -.75f, 0 } } } };

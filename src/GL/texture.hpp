@@ -5,6 +5,7 @@
 
 #include <GL/glut.h>
 #include <array>
+#include <cassert>
 
 namespace GL {
 

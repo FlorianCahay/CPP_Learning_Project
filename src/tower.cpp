@@ -3,6 +3,8 @@
 #include "airport.hpp"
 #include "terminal.hpp"
 
+#include <cassert>
+
 WaypointQueue Tower::get_circle() const
 {
     return { { Point3D { -1.5f, -1.5f, .5f }, wp_air },

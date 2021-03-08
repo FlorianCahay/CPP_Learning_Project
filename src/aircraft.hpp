@@ -1,11 +1,13 @@
 #pragma once
 
+#include "GL/displayable.hpp"
 #include "aircraft_types.hpp"
 #include "config.hpp"
 #include "geometry.hpp"
 #include "tower.hpp"
 #include "waypoint.hpp"
 
+#include <string>
 #include <string_view>
 
 class Aircraft : public GL::Displayable, public GL::DynamicObject
@@ -46,7 +48,7 @@ private:
 public:
     Aircraft(const AircraftType& type_, const std::string_view& flight_number_, const Point3D& pos_,
              const Point3D& speed_, Tower& control_) :
-        GL::Displayable { pos.x() + pos.y() },
+        GL::Displayable { pos_.x() + pos_.y() },
         type { type_ },
         flight_number { flight_number_ },
         pos { pos_ },
