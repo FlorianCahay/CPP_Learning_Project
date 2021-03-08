@@ -56,6 +56,9 @@ void TowerSimulation::create_keystrokes() const
     GL::keystrokes.emplace('+', []() { GL::change_zoom(0.95f); });
     GL::keystrokes.emplace('-', []() { GL::change_zoom(1.05f); });
     GL::keystrokes.emplace('f', []() { GL::toggle_fullscreen(); });
+    GL::keystrokes.emplace('a', []() { GL::change_framerate(5); });
+    GL::keystrokes.emplace('z', []() { GL::change_framerate(-5); });
+    GL::keystrokes.emplace('p', []() { GL::toggle_pause(); });
 }
 
 void TowerSimulation::display_help() const

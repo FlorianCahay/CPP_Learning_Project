@@ -45,6 +45,11 @@ void change_zoom(const float factor)
     handle_error("Zoom");
 }
 
+void change_framerate(const int value) {
+    ticks_per_sec += value;
+    handle_error("framerate");
+}
+
 void reshape_window(int w, int h)
 {
     glViewport(0, 0, w, h);
@@ -73,10 +78,23 @@ void display(void)
 
 void timer(const int step)
 {
-    for (auto& item : move_queue)
-    {
-        item->move();
+    if (!pause) {
+        for (auto it = move_queue.begin(); it != move_queue.end(); ++it) {
+            if ((*it)->move()) {
+                move_queue.erase(it);
+                // for (auto it_2 = display_queue.begin(); it_2 != display_queue.end(); ++it_2) {
+                //     if ((*it) == (*it_2)) {
+                //         display_queue.erase(it);
+                //     }
+                // }
+            }
+        }
+        // for (auto& item : move_queue)
+        // {
+        //     item->move();
+        // }
     }
+    
     glutPostRedisplay();
     glutTimerFunc(1000u / ticks_per_sec, timer, step + 1);
 }
@@ -111,6 +129,11 @@ void loop()
 void exit_loop()
 {
     glutLeaveMainLoop();
+}
+
+void toggle_pause() {
+    pause = !pause;
+    handle_error("toggle pause");
 }
 
 } // namespace GL
