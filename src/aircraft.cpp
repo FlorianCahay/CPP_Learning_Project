@@ -63,7 +63,6 @@ void Aircraft::operate_landing_gear()
         if (ground_before && !ground_after)
         {
             std::cout << flight_number << " lift off" << std::endl;
-            is_lift_off = true;
         }
         else if (!ground_before && ground_after)
         {
@@ -89,10 +88,13 @@ void Aircraft::add_waypoint(const Waypoint& wp, const bool front)
     }
 }
 
-bool Aircraft::move()
+bool Aircraft::update()
 {
     if (waypoints.empty())
     {
+        if (is_service_done) {
+            return false;
+        }
         waypoints = control.get_instructions(*this);
     }
 
@@ -137,7 +139,7 @@ bool Aircraft::move()
         // update the z-value of the displayable structure
         GL::Displayable::z = pos.x() + pos.y();
     }
-    return is_lift_off;
+    return true;
 }
 
 void Aircraft::display() const
