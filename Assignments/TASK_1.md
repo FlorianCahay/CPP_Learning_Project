@@ -32,7 +32,7 @@ Répondez aux questions suivantes :
 1. Qui est responsable de détruire les avions du programme ? (si vous ne trouvez pas, faites/continuez la question 4 dans TASK_0)
 2. Quelles autres structures contiennent une référence sur un avion au moment où il doit être détruit ?
 3. Comment fait-on pour supprimer la référence sur un avion qui va être détruit dans ces structures ?
-4. Pourquoi ne pouvez-vous pas appliquer la même chose sur votre conteneur d'avions ?
+4. Pourquoi n'est-il pas très judicieux d'essayer d'appliquer la même chose pour votre `AircraftManager` ?
 
 Pour simplifier le problème, vous allez déplacer l'ownership des avions dans la classe `AircraftManager`.
 Vous allez également faire en sorte que ce soit cette classe qui s'occupe de déplacer les avions, et non plus la fonction `timer`.
