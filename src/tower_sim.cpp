@@ -64,7 +64,7 @@ void TowerSimulation::create_keystrokes()
     {
         GL::keystrokes.emplace(i + '0', [this, i]() { manager.counter(airlines[i]); });
     }
-    
+    GL::keystrokes.emplace('m', [this]() { manager.print_nb_crash(); });
     
 }
 
