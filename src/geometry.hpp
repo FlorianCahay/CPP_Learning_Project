@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iostream>
 #include <numeric>
+#include <utility>
 
 template <size_t dimension, typename Type>
 class Point {
@@ -13,33 +14,39 @@ class Point {
         std::array<Type, dimension> values;
 
         Point() {}
-        Point(Type x, Type y) : values { x, y } {}
-        Point(Type x, Type y, Type z) : values { x, y, z } {}
+
+        template<typename... Args>
+        Point(Type t, Args&&... args) : values { t, static_cast<Type>(std::forward<Args>(args))... } 
+        {
+            // On vérifie le nombre d'argument passé au constructeur (+1 car le premier argument ne compte pas).
+            static_assert(sizeof...(args)+1 == dimension, "You must enter the exact number of coordinates.");
+        }
+
 
         Type& x() { 
-            assert(dimension >= 1);
+            static_assert(dimension >= 1, "To access this value, the point must be at least one dimension.");
             return values[0]; 
         }
         Type x() const { 
-            assert(dimension >= 1);
+            static_assert(dimension >= 1, "To access this value, the point must be at least one dimension.");
             return values[0]; 
         }
 
         Type& y() { 
-            assert(dimension >= 2);
+            static_assert(dimension >= 2, "To access this value, the point must be at least two-dimensional.");
             return values[1]; 
         }
         Type y() const { 
-            assert(dimension >= 2);
+            static_assert(dimension >= 2, "To access this value, the point must be at least two-dimensional.");
             return values[1]; 
         }
 
         Type& z() { 
-            assert(dimension >= 3);
+            static_assert(dimension >= 3, "To access this value, the point must be at least three-dimensional.");
             return values[2]; 
         }
         Type z() const { 
-            assert(dimension >= 3);
+            static_assert(dimension >= 3, "To access this value, the point must be at least three-dimensional.");
             return values[2]; 
         }
 
@@ -94,8 +101,9 @@ class Point {
         }
 
         Point operator-() const {
-            // à adapter pour n coordonnées
-            return Point { -x(), -y(), -z() }; 
+            Point result = *this;
+            std::transform(result.values.begin(), result.values.end(), result.values.begin(), [] (Type x) { return x = -x; });
+            return result; 
         }
 
         float length() const {
@@ -134,11 +142,13 @@ using Point3D = Point<3, float>;
 
 // void test_generic_points() {
 //     int a = 5;
-//     //Point<2, int> p1;
-//     //Point<2, int> p2;
-//     //auto p3 = p1 + p2;
-//     //p1 += p2;
-//     //p1 *= 3; // ou 3.f, ou 3.0 en fonction du type de Point
+//     Point<2, int> p1;
+//     Point<2, int> p2;
+//     auto p3 = p1 + p2;
+//     p1 += p2;
+//     p1 *= 3; // ou 3.f, ou 3.0 en fonction du type de Point
+
+//     Point3D p{1, 2};
 // }
 
 
