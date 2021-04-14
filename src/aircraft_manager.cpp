@@ -1,15 +1,20 @@
 #include "aircraft_manager.hpp"
 
-#include <utility>
 
-void AircraftManager::add(std::unique_ptr<Aircraft> aircraft)
-{
+void AircraftManager::add(std::unique_ptr<Aircraft> aircraft) {
     aircrafts.emplace_back(std::move(aircraft));
 }
 
-bool AircraftManager::update()
-{
-    aircrafts.erase(std::remove_if(aircrafts.begin(), aircrafts.end(), [this](std::unique_ptr<Aircraft> &x) { 
+bool AircraftManager::update() {
+
+    std::sort(aircrafts.begin(), aircrafts.end(), [](std::unique_ptr<Aircraft>& first, std::unique_ptr<Aircraft>& second) {
+        if (first->has_terminal() == second->has_terminal()) {
+            return first->get_fuel() < second->get_fuel();
+        }
+        return first->has_terminal();
+    });
+
+    aircrafts.erase(std::remove_if(aircrafts.begin(), aircrafts.end(), [this](std::unique_ptr<Aircraft>& x) { 
         try {
             return !(x->update());
         } catch (const AircraftCrash& e) {

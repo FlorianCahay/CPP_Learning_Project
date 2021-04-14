@@ -63,13 +63,16 @@ public:
 
     const std::string& get_flight_num() const { return flight_number; }
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
+    unsigned short get_fuel() const { return fuel; }
 
     void display() const override;
     bool update() override;
 
     // Un terminal a t-il été réservé pour l'avion ?
     bool has_terminal() const {
-        //auto wp = waypoints.back();
+        if (waypoints.empty()) {
+            return is_at_terminal;
+        }
         return waypoints.back().is_at_terminal();
     }
 

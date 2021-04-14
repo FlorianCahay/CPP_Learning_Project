@@ -3,7 +3,9 @@
 #include "GL/dynamic_object.hpp"
 #include "aircraft.hpp"
 
+#include <algorithm>
 #include <memory>
+#include <utility>
 #include <vector>
 
 class AircraftManager : public GL::DynamicObject {
