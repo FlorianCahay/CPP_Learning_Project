@@ -4,13 +4,10 @@
 
 #include <cmath>
 
-void Aircraft::turn_to_waypoint()
-{
-    if (!waypoints.empty())
-    {
+void Aircraft::turn_to_waypoint() {
+    if (!waypoints.empty()) {
         Point3D target = waypoints[0];
-        if (waypoints.size() > 1)
-        {
+        if (waypoints.size() > 1) {
             const float d   = (waypoints[0] - pos).length();
             const Point3D W = (waypoints[0] - waypoints[1]).normalize(d / 2.0f);
             target += W;
@@ -20,8 +17,7 @@ void Aircraft::turn_to_waypoint()
     }
 }
 
-void Aircraft::turn(Point3D direction)
-{
+void Aircraft::turn(Point3D direction) {
     (speed += direction.cap_length(type.max_accel)).cap_length(max_speed());
 }
 
@@ -35,8 +31,7 @@ unsigned int Aircraft::get_speed_octant() const
         // partition into NUM_AIRCRAFT_TILES equal pieces
         return (static_cast<int>(std::round((angle * NUM_AIRCRAFT_TILES) / (2.0f * 3.141592f))) + 1) %
                NUM_AIRCRAFT_TILES;
-    }
-    else {
+    } else {
         return 0;
     }
 }
@@ -49,8 +44,7 @@ void Aircraft::arrive_at_terminal() {
 }
 
 // deploy and retract landing gear depending on next waypoints
-void Aircraft::operate_landing_gear()
-{
+void Aircraft::operate_landing_gear() {
     if (waypoints.size() > 1u) {
         const auto it            = waypoints.begin();
         const bool ground_before = it->is_on_ground();
@@ -79,18 +73,29 @@ void Aircraft::add_waypoint(const Waypoint& wp) {
 }
 
 bool Aircraft::update() {
-    if (waypoints.empty()) {
-        if (is_service_done) {
-            return false;
+    if (waypoints.empty()) { // si l'avion est en attente d'instructions
+        if (is_service_done) { // si l'avion a déjà effectué son service dans un terminal
+            return false; // on supprime l'avion
         }
+
         const auto front = false;
         for (const auto& wp: control.get_instructions(*this)) {
             add_waypoint<front>(wp);
+        } 
+    }
+
+    if (is_circling()) { // si l'avion n'a toujours pas de terminal réservé
+        const auto path = control.reserve_terminal(*this);
+        if (!path.empty()) {
+            waypoints.clear(); // on le redirige directement vers le terminal sans attendre la fin de son tour
+            for (const auto wp : path) {
+                add_waypoint<false>(wp);
+            }
         }
     }
 
-    if (!is_at_terminal) // l'avion n'est pas au terminal
-    {
+    // l'avion n'est pas au terminal
+    if (!is_at_terminal) {
         turn_to_waypoint();
         // move in the direction of the current speed
         pos += speed;
@@ -107,22 +112,19 @@ bool Aircraft::update() {
         }
 
         if (is_on_ground()) { // l'avion est au sol
-            if (!landing_gear_deployed)
-            {
+            if (!landing_gear_deployed) {
                 //using namespace std::string_literals;
                 throw AircraftCrash { flight_number, pos, speed, "bad landing" };
             }
         } else { // l'avion est en vol
             // if we are in the air, but too slow, then we will sink!
             const float speed_len = speed.length();
-            if (speed_len < SPEED_THRESHOLD)
-            {
+            if (speed_len < SPEED_THRESHOLD) {
                 pos.z() -= SINK_FACTOR * (SPEED_THRESHOLD - speed_len);
             }
 
             fuel--;
             if (fuel <= 0) { // s'il n'y a plus de carburant dans l'avion
-                //using namespace std::string_literals;
                 throw AircraftCrash { flight_number, pos, speed, "out of fuel" };
             }
         }

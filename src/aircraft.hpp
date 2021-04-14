@@ -19,8 +19,8 @@ private:
     WaypointQueue waypoints = {};
     Tower& control;
     bool landing_gear_deployed = false; // is the landing gear deployed?
-    bool is_at_terminal        = false;
-    bool is_service_done       = false;
+    bool is_at_terminal        = false; // L'avion est-il au terminal ?
+    bool is_service_done       = false; // L'avion a-t-il fini son service ?
     unsigned short fuel        = 150 + std::rand() % 2851; // [150; 3000]
 
     // turn the aircraft to arrive at the next waypoint
@@ -41,6 +41,7 @@ private:
     void operate_landing_gear();
     template <bool front>
     void add_waypoint(const Waypoint& wp);
+    // L'avion est-il au sol ?
     bool is_on_ground() const { return pos.z() < DISTANCE_THRESHOLD; }
     float max_speed() const { return is_on_ground() ? type.max_ground_speed : type.max_air_speed; }
 
@@ -65,6 +66,17 @@ public:
 
     void display() const override;
     bool update() override;
+
+    // Un terminal a t-il été réservé pour l'avion ?
+    bool has_terminal() const {
+        //auto wp = waypoints.back();
+        return waypoints.back().is_at_terminal();
+    }
+
+    // L'avion attend t-il qu'on lui assigne un terminal pour pouvoir attérir ?
+    bool is_circling() const {
+        return !has_terminal() && !is_on_ground() && !is_service_done;
+    }
 
     friend class Tower;
 };

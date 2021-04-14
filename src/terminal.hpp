@@ -6,8 +6,7 @@
 
 #include <cassert>
 
-class Terminal : public GL::DynamicObject
-{
+class Terminal : public GL::DynamicObject {
 private:
     unsigned int service_progress    = SERVICE_CYCLES;
     const Aircraft* current_aircraft = nullptr;
@@ -19,30 +18,27 @@ private:
 public:
     Terminal(const Point3D& pos_) : pos { pos_ } {}
 
+    // Y a t-il un avion qui utilise ce terminal actuellement ?
     bool in_use() const { return current_aircraft != nullptr; }
+    // Est-ce qu'un avion est en train d'effectuer son service dans ce terminal ?
     bool is_servicing() const { return service_progress < SERVICE_CYCLES; }
     void assign_craft(const Aircraft& aircraft) { current_aircraft = &aircraft; }
 
-    void start_service(const Aircraft& aircraft)
-    {
+    void start_service(const Aircraft& aircraft) {
         assert(aircraft.distance_to(pos) < DISTANCE_THRESHOLD);
         std::cout << "now servicing " << aircraft.get_flight_num() << "...\n";
         service_progress = 0;
     }
 
-    void finish_service()
-    {
-        if (!is_servicing())
-        {
+    void finish_service() {
+        if (!is_servicing()) {
             std::cout << "done servicing " << current_aircraft->get_flight_num() << '\n';
             current_aircraft = nullptr;
         }
     }
 
-    bool update() override
-    {
-        if (in_use() && is_servicing())
-        {
+    bool update() override {
+        if (in_use() && is_servicing()) {
             ++service_progress;
         }
         return true;
