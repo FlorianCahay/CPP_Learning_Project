@@ -22,7 +22,6 @@ TowerSimulation::TowerSimulation(int argc, char** argv) :
 
     create_keystrokes();
     GL::move_queue.emplace(&manager);
-    _factory.init_aircraft_types();
 }
 
 TowerSimulation::~TowerSimulation() {
@@ -64,13 +63,14 @@ void TowerSimulation::init_airport() {
     GL::move_queue.emplace(airport);
 }
 
-void TowerSimulation::launch() {
+void TowerSimulation::launch(std::string_view path) {
     if (help)     {
         display_help();
         return;
     }
 
     init_airport();
+    _factory.load_types(path);
 
     GL::loop();
 }

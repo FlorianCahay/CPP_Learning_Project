@@ -28,5 +28,5 @@ public:
     TowerSimulation(int argc, char** argv);
     ~TowerSimulation();
 
-    void launch();
+    void launch(std::string_view path);
 };

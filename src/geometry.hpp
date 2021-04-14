@@ -10,6 +10,13 @@
 
 template <size_t dimension, typename Type>
 class Point {
+    private:
+        template <typename Op>
+        void apply_operation(const Point& other) {
+            Op op;
+            std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), [op] (Type x1, Type x2) { return op(x1, x2); });
+        }
+
     public:
         std::array<Type, dimension> values;
 
@@ -48,12 +55,6 @@ class Point {
         Type z() const { 
             static_assert(dimension >= 3, "To access this value, the point must be at least three-dimensional.");
             return values[2]; 
-        }
-
-        template <typename Op>
-        void apply_operation(const Point& other) {
-            Op op;
-            std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), [op] (Type x1, Type x2) { return op(x1, x2); });
         }
 
         Point& operator+=(const Point& other) {
