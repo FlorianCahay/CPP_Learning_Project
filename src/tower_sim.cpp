@@ -31,15 +31,15 @@ TowerSimulation::~TowerSimulation() {
 void TowerSimulation::create_keystrokes() {
     GL::keystrokes.emplace('x', []() { GL::exit_loop(); });
     GL::keystrokes.emplace('q', []() { GL::exit_loop(); });
-    GL::keystrokes.emplace('c', [this]() { manager.add(_factory.create_random_aircraft(airport)); });
+    GL::keystrokes.emplace('c', [this]() { manager.add(factory.create_random_aircraft(airport)); });
     GL::keystrokes.emplace('+', []() { GL::change_zoom(0.95f); });
     GL::keystrokes.emplace('-', []() { GL::change_zoom(1.05f); });
     GL::keystrokes.emplace('f', []() { GL::toggle_fullscreen(); });
     GL::keystrokes.emplace('a', []() { GL::ticks_per_sec = std::min(GL::ticks_per_sec + 2u, 180u); });
     GL::keystrokes.emplace('z', []() { GL::ticks_per_sec = std::max(GL::ticks_per_sec - 2u, 1u); });
     GL::keystrokes.emplace('p', []() { GL::toggle_pause(); });
-    for (int i = 0; i <= 7; i++) {
-        GL::keystrokes.emplace(i + '0', [this, i]() { manager.counter(_factory.get_one_airline(i)); });
+    for (int i = 0; i < NB_AIRLINES; i++) {
+        GL::keystrokes.emplace(i + '0', [this, i]() { manager.counter(factory.get_one_airline(i)); });
     }
     GL::keystrokes.emplace('m', [this]() { manager.print_nb_crash(); });
     
@@ -73,7 +73,7 @@ void TowerSimulation::launch(std::string_view path) {
     }
 
     init_airport();
-    _factory.load_types(path);
+    factory.load_types(path);
 
     GL::loop();
 }

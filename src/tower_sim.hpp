@@ -14,7 +14,7 @@ private:
     bool help        = false;
     Airport* airport = nullptr;
     AircraftManager manager;
-    AircraftFactory _factory;
+    AircraftFactory factory;
 
     TowerSimulation(const TowerSimulation&) = delete;
     TowerSimulation& operator=(const TowerSimulation&) = delete;
@@ -28,5 +28,5 @@ public:
     TowerSimulation(int argc, char** argv);
     ~TowerSimulation();
 
-    void launch(std::string_view path);
+    void launch(std::string_view path = "empty.txt");
 };

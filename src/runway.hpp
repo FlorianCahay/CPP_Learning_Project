@@ -3,8 +3,7 @@
 #include "geometry.hpp"
 
 // runway positions relative to the airport position
-struct Runway
-{
+struct Runway {
     const Point3D start, end;
 
     Runway(const Point3D& start_, const float length = 1) :

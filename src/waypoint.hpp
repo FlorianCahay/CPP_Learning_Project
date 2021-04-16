@@ -4,15 +4,13 @@
 
 #include <deque>
 
-enum WaypointType
-{
+enum WaypointType {
     wp_air,
     wp_ground,
     wp_terminal
 };
 
-class Waypoint : public Point3D
-{
+class Waypoint : public Point3D {
 public:
     const WaypointType type;
 

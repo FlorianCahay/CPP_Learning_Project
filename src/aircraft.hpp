@@ -7,6 +7,7 @@
 #include "tower.hpp"
 #include "waypoint.hpp"
 
+#include <cmath>
 #include <string>
 #include <string_view>
 
@@ -65,43 +66,17 @@ public:
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
     unsigned short get_required_fuel() const { return MAX_FUEL - fuel; }
     unsigned short get_fuel() const { return fuel; }
+    bool is_low_on_fuel() const { return fuel < 200; }
+    bool need_refill() const { return is_low_on_fuel() && is_at_terminal; }
+    // Un terminal a t-il été réservé pour l'avion ?
+    bool has_terminal() const;
+    // L'avion attend t-il qu'on lui assigne un terminal pour pouvoir attérir ?
+    bool is_circling() const { return !has_terminal() && !is_on_ground() && !is_service_done; }
 
     void display() const override;
     bool update() override;
 
-    bool is_low_on_fuel() const { return fuel < 200; }
-    bool need_refill() const { return is_low_on_fuel() && is_at_terminal; }
-    void refill(int& fuel_stock) {
-        if (fuel_stock == 0) {
-            return;
-        }
-        auto stock = 0;
-        auto need = get_required_fuel();
-        auto result = fuel_stock - need;
-        if (result < 0) {
-            stock = fuel_stock;
-            fuel += fuel_stock;
-            fuel_stock = 0;
-        } else {
-            stock = need;
-            fuel = MAX_FUEL;
-            fuel_stock -= need;
-        }
-        std::cout << "The tank of the " << flight_number << " aircraft has been filled with " << stock << " liters." << std::endl;
-    }
-
-    // Un terminal a t-il été réservé pour l'avion ?
-    bool has_terminal() const {
-        if (waypoints.empty()) {
-            return is_at_terminal;
-        }
-        return waypoints.back().is_at_terminal();
-    }
-
-    // L'avion attend t-il qu'on lui assigne un terminal pour pouvoir attérir ?
-    bool is_circling() const {
-        return !has_terminal() && !is_on_ground() && !is_service_done;
-    }
+    void refill(int& fuel_stock);
 
     friend class Tower;
 };

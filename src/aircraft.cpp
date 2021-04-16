@@ -1,8 +1,6 @@
 #include "aircraft.hpp"
-
 #include "GL/opengl_interface.hpp"
 
-#include <cmath>
 
 void Aircraft::turn_to_waypoint() {
     if (!waypoints.empty()) {
@@ -137,4 +135,30 @@ bool Aircraft::update() {
 
 void Aircraft::display() const {
     type.texture.draw(project_2D(pos), { PLANE_TEXTURE_DIM, PLANE_TEXTURE_DIM }, get_speed_octant());
+}
+
+void Aircraft::refill(int& fuel_stock) {
+    if (fuel_stock == 0) {
+        return;
+    }
+    auto stock = 0;
+    auto need = get_required_fuel();
+    auto result = fuel_stock - need;
+    if (result < 0) {
+        stock = fuel_stock;
+        fuel += fuel_stock;
+        fuel_stock = 0;
+    } else {
+        stock = need;
+        fuel = MAX_FUEL;
+        fuel_stock -= need;
+    }
+    std::cout << "The tank of the " << flight_number << " aircraft has been filled with " << stock << " liters." << std::endl;
+}
+
+bool Aircraft::has_terminal() const {
+    if (waypoints.empty()) {
+        return is_at_terminal;
+    }
+    return waypoints.back().is_at_terminal();
 }

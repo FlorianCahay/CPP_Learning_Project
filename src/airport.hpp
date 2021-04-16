@@ -13,8 +13,7 @@
 
 #include <vector>
 
-class Airport : public GL::Displayable, public GL::DynamicObject
-{
+class Airport : public GL::Displayable, public GL::DynamicObject {
 private:
     const AirportType& type;
     const Point3D pos;
@@ -31,25 +30,21 @@ private:
     // 1. a sequence of waypoints reaching the terminal from the runway-end and
     // 2. the number of the terminal (used for liberating the terminal later)
     // otherwise, return an empty waypoint-vector and any number
-    std::pair<WaypointQueue, size_t> reserve_terminal(Aircraft& aircraft)
-    {
+    std::pair<WaypointQueue, size_t> reserve_terminal(Aircraft& aircraft) {
         const auto it =
             std::find_if(terminals.begin(), terminals.end(), [](const Terminal& t) { return !t.in_use(); });
 
-        if (it != terminals.end())
-        {
+        if (it != terminals.end()) {
             it->assign_craft(aircraft);
             const auto term_idx = std::distance(terminals.begin(), it);
             return { type.air_to_terminal(pos, 0, term_idx), term_idx };
         }
-        else
-        {
+        else {
             return { {}, 0u };
         }
     }
 
-    WaypointQueue start_path(const size_t terminal_number)
-    {
+    WaypointQueue start_path(const size_t terminal_number) {
         return type.terminal_to_air(pos, 0, terminal_number);
     }
 
@@ -76,7 +71,7 @@ public:
             t.update();
         }
 
-        // J'ai mis après la livraison de fuel pour éviter de commander le même volume deux fois.
+        // J'ai mis après la livraison de fuel après pour éviter de commander le même volume deux fois.
         if (next_refill_time == 0) {
             fuel_stock += ordered_fuel;
             unsigned int received = ordered_fuel;

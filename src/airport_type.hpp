@@ -8,8 +8,7 @@
 #include <initializer_list>
 #include <vector>
 
-class AirportType
-{
+class AirportType {
 private:
     const Point3D crossing_pos;
     const Point3D gateway_pos;
@@ -25,14 +24,12 @@ public:
         runways { runways_ }
     {}
 
-    std::vector<Terminal> create_terminals() const
-    {
+    std::vector<Terminal> create_terminals() const {
         return std::vector<Terminal> { terminal_pos.begin(), terminal_pos.end() };
     }
 
     WaypointQueue air_to_terminal(const Point3D& offset, const size_t runway_num,
-                                  const size_t terminal_num) const
-    {
+                                  const size_t terminal_num) const {
         const Runway& runway = runways.at(runway_num);
 
         const auto runway_middle_pos = (runway.start + runway.end) * 0.5f;
@@ -46,8 +43,7 @@ public:
 
         WaypointQueue result { before_in_air, runway_middle, runway_end, crossing };
 
-        if (terminal_num != 0)
-        {
+        if (terminal_num != 0) {
             result.emplace_back(gateway_pos, wp_ground);
         }
 
@@ -56,8 +52,7 @@ public:
     }
 
     WaypointQueue terminal_to_air(const Point3D& offset, const size_t runway_num,
-                                  const size_t terminal_num) const
-    {
+                                  const size_t terminal_num) const {
         const Runway& runway = runways.at(runway_num);
         const float angle    = (rand() % 1000) * 2 * 3.141592f / 1000.f; // random angle between 0 and 2pi
 
@@ -74,8 +69,7 @@ public:
 
         WaypointQueue result { crossing, runway_start, runway_middle, later_in_air, randomly_high };
 
-        if (terminal_num != 0)
-        {
+        if (terminal_num != 0) {
             result.emplace_front(gateway_pos, wp_ground);
         }
 
