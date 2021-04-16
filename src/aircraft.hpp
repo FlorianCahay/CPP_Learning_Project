@@ -63,10 +63,32 @@ public:
 
     const std::string& get_flight_num() const { return flight_number; }
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
+    unsigned short get_required_fuel() const { return MAX_FUEL - fuel; }
     unsigned short get_fuel() const { return fuel; }
 
     void display() const override;
     bool update() override;
+
+    bool is_low_on_fuel() const { return fuel < 200; }
+    bool need_refill() const { return is_low_on_fuel() && is_at_terminal; }
+    void refill(int& fuel_stock) {
+        if (fuel_stock == 0) {
+            return;
+        }
+        auto stock = 0;
+        auto need = get_required_fuel();
+        auto result = fuel_stock - need;
+        if (result < 0) {
+            stock = fuel_stock;
+            fuel += fuel_stock;
+            fuel_stock = 0;
+        } else {
+            stock = need;
+            fuel = MAX_FUEL;
+            fuel_stock -= need;
+        }
+        std::cout << "The tank of the " << flight_number << " aircraft has been filled with " << stock << " liters." << std::endl;
+    }
 
     // Un terminal a t-il été réservé pour l'avion ?
     bool has_terminal() const {
